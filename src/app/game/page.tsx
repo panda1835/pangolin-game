@@ -110,7 +110,7 @@ export default function GamePage() {
         for (const item of prev) {
           const dx = Math.abs(item.x - pangolinX);
           const dy = Math.abs(item.y - 90);
-          if (dx < 10 && dy < 15) {
+          if (dx < 10 && dy < 8) {
             if (item.type === ITEM_TYPES.TRAP) {
               if (!isProtected) {
                 setIsGameOver(true);
@@ -120,9 +120,9 @@ export default function GamePage() {
               setTimeout(() => setPangolinY(0), 150);
 
               if (item.type === ITEM_TYPES.BLACK_ANT) {
-                setScore((s) => s + 0.5);
+                setScore((s) => s + 1);
               } else if (item.type === ITEM_TYPES.GOLDEN_ANT) {
-                setScore((s) => s + 5);
+                setScore((s) => s + 10);
               } else if (item.type === ITEM_TYPES.SHIELD) {
                 setIsProtected(true);
               }

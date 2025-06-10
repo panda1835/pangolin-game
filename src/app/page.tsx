@@ -29,7 +29,7 @@ export default function Home() {
       {screen === "home" && (
         <div>
           {/* Background */}
-          <div className="absolute top-0 left-0 w-full h-full bg-repeat-y bg-[url('/Background.png')] z-0" />
+          {/* <div className="absolute top-0 left-0 w-full h-full bg-[url('/Background.png')] z-0" /> */}
 
           <div className="flex flex-col items-center justify-center text-center relative z-10">
             <div className="relative ">
