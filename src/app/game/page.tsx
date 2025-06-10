@@ -196,6 +196,7 @@ export default function GamePage() {
           >
             <div className="relative w-[100px] h-[100px]">
               <Image
+                unoptimized
                 src="/LongPangolin.png"
                 alt="Pangolin"
                 width={100}
@@ -204,6 +205,7 @@ export default function GamePage() {
               {isProtected && (
                 <div className="absolute top-0 left-2 w-full h-full flex items-center justify-center">
                   <Image
+                    unoptimized
                     src="/Shield.png"
                     alt="Shield Overlay"
                     width={100}
