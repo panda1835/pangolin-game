@@ -1,13 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // Add this import
+
 import Image from "next/image";
 import {
   Instruction1,
   Instruction2,
 } from "@/components/instructions/Instruction";
 export default function Home() {
-  const [screen, setScreen] = useState<"home" | "instructions">("home");
+  const [screen, setScreen] = useState<"home" | "instructions" | "game">(
+    "home"
+  );
+  const router = useRouter(); // Initialize the router
 
   return (
     <main className="relative flex min-h-screen w-screen items-center justify-center overflow-hidden">
@@ -22,39 +27,48 @@ export default function Home() {
 
       {/* HOME SCREEN */}
       {screen === "home" && (
-        <div className="flex flex-col items-center justify-center text-center relative z-10">
-          <Image
-            unoptimized
-            src="/TeTeDuHanh.png"
-            alt="Title"
-            width={600}
-            height={200}
-            className="mb-8"
-          />
+        <div>
+          {/* Background */}
+          <div className="absolute top-0 left-0 w-full h-full bg-repeat-y bg-[url('/Background.png')] z-0" />
 
-          <div
-            className="relative w-[200px] h-[200px] cursor-pointer transition-transform hover:scale-110"
-            onClick={() => setScreen("instructions")}
-          >
-            <Image
-              unoptimized
-              src="/DiNao.png"
-              alt="Di Nào"
-              fill
-              className="object-contain"
-            />
+          <div className="flex flex-col items-center justify-center text-center relative z-10">
+            <div className="relative ">
+              {/* Background image */}
+              <Image
+                unoptimized
+                src="/TeTeDuHanh.png"
+                alt="Title"
+                width={800}
+                height={200}
+                className=""
+              />
+            </div>
+
+            <div
+              className="relative cursor-pointer transition-transform hover:scale-110"
+              onClick={() => setScreen("instructions")}
+            >
+              <Image
+                unoptimized
+                src="/DiNao.png"
+                alt="Di Nào"
+                width={200}
+                height={100}
+                className="object-contain"
+              />
+            </div>
           </div>
-
-          {/* <div className="absolute right-0 bottom-0">
+          {/*  Pangolin Image */}
+          <div className="absolute bottom-[-100px] right-[-500px] overflow-hidden z-20">
             <Image
               unoptimized
               src="/Pangolin1.png"
-              alt="Pangolin"
-              width={500}
+              alt="Tê tê"
+              width={950}
               height={300}
               className="object-contain"
             />
-          </div> */}
+          </div>
         </div>
       )}
 
@@ -69,7 +83,7 @@ export default function Home() {
 
             <div
               className="flex w-full justify-center items-center mt-8 cursor-pointer transition-transform hover:scale-110"
-              // onClick={() => setScreen("instructions")}
+              onClick={() => router.push("/game")}
             >
               <Image
                 unoptimized

@@ -70,14 +70,14 @@ export const Instruction2 = () => {
             unoptimized
             src="/KienDenPoint.png"
             alt="Kiến đen bằng 1 điểm"
-            width={300}
+            width={250}
             height={100}
           />
           <Image
             unoptimized
             src="/KienVangPoint.png"
             alt="Kiến vàng bằng 10 điểm"
-            width={300}
+            width={250}
             height={70}
           />
         </div>

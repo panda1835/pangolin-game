@@ -124,3 +124,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes scrollBg {
+  0% {
+    background-position-y: 100%;
+  }
+  100% {
+    background-position-y: 0%;
+  }
+}
+
+.animate-scrollBg {
+  animation: scrollBg 10s linear infinite;
+}
