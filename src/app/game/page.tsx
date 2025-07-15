@@ -22,6 +22,17 @@ const getRandomItem = () => {
   return { id: `${Date.now()}-${Math.random()}`, x, y: -10, type };
 };
 
+const scoreToSpeed = (score: number) => {
+  const k = 0.1; // steeper = faster drop
+  return (
+    70 -
+    20 / (1 + Math.exp(-k * (score - 50))) -
+    25 / (1 + Math.exp(-k * (score - 100))) -
+    10 / (1 + Math.exp(-k * (score - 150))) -
+    5 / (1 + Math.exp(-k * (score - 200)))
+  );
+};
+
 export default function GamePage() {
   const [pangolinX, setPangolinX] = useState(50);
   const [pangolinY, setPangolinY] = useState(0);
@@ -33,6 +44,33 @@ export default function GamePage() {
   const [isProtected, setIsProtected] = useState(false);
   const [shieldTimeLeft, setShieldTimeLeft] = useState(0);
   const gameAreaRef = useRef<HTMLDivElement>(null);
+
+  const blackAntSound = useRef<HTMLAudioElement | null>(null);
+  const goldenAntSound = useRef<HTMLAudioElement | null>(null);
+  const shieldSound = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    blackAntSound.current = new Audio("/audio/eat-black-ant.mp3");
+    goldenAntSound.current = new Audio("/audio/eat-golden-ant.mp3");
+    shieldSound.current = new Audio("/audio/eat-shield.mp3");
+  }, []);
+
+  useEffect(() => {
+    const bgAudio = new Audio("/audio/background.mp3");
+    bgAudio.loop = true;
+    bgAudio.volume = 0.3;
+
+    if (!isGameOver) {
+      bgAudio.play().catch((e) => {
+        console.warn("Autoplay failed:", e);
+      });
+    }
+
+    return () => {
+      bgAudio.pause();
+      bgAudio.currentTime = 0;
+    };
+  }, [isGameOver]);
 
   useEffect(() => {
     const handleMove = (clientX: number) => {
@@ -65,15 +103,7 @@ export default function GamePage() {
             .filter((item) => item.y < 500)
         );
       },
-      score < 50
-        ? 70
-        : score < 100
-        ? 50
-        : score < 150
-        ? 25
-        : score < 200
-        ? 15
-        : 10
+      scoreToSpeed(score) // Adjust speed based on score
     ); // slower than before (was 50ms), but each tick moves more
     return () => clearInterval(interval);
   }, [isGameOver, score]);
@@ -121,10 +151,13 @@ export default function GamePage() {
 
               if (item.type === ITEM_TYPES.BLACK_ANT) {
                 setScore((s) => s + 1);
+                blackAntSound.current?.play();
               } else if (item.type === ITEM_TYPES.GOLDEN_ANT) {
                 setScore((s) => s + 10);
+                goldenAntSound.current?.play();
               } else if (item.type === ITEM_TYPES.SHIELD) {
                 setIsProtected(true);
+                shieldSound.current?.play();
               }
             }
           } else {
