@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { GameOver } from "./GameOver";
+import HoverSoundWrapper from "@/components/common/HoverSoundWrapper";
 const ITEM_TYPES = {
   BLACK_ANT: "BlackAnt",
   GOLDEN_ANT: "GoldenAnt",
@@ -10,15 +11,21 @@ const ITEM_TYPES = {
   SHIELD: "Shield",
 };
 
-const getRandomItem = () => {
-  const types = [
-    ITEM_TYPES.BLACK_ANT,
-    ITEM_TYPES.GOLDEN_ANT,
-    ITEM_TYPES.TRAP,
-    ITEM_TYPES.SHIELD,
-  ];
+const getRandomItem = (score: number) => {
+  const probabilities = [];
+
+  // Base: More common items
+  probabilities.push(
+    ...Array(10).fill(ITEM_TYPES.BLACK_ANT),
+    ...Array(score < 100 ? 2 : 1).fill(ITEM_TYPES.GOLDEN_ANT),
+    ...Array(score > 30 ? Math.floor(score / 10) : 1).fill(ITEM_TYPES.TRAP),
+    ...Array(score < 80 ? 2 : 1).fill(ITEM_TYPES.SHIELD)
+  );
+
+  // Random pick based on weighted array
+  const type = probabilities[Math.floor(Math.random() * probabilities.length)];
   const x = Math.random() * 80 + 10;
-  const type = types[Math.floor(Math.random() * types.length)];
+
   return { id: `${Date.now()}-${Math.random()}`, x, y: -10, type };
 };
 
@@ -50,15 +57,16 @@ export default function GamePage() {
   const shieldSound = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    blackAntSound.current = new Audio("/audio/eat-black-ant.mp3");
+    blackAntSound.current = new Audio("/audio/eat-black-ant.m4a");
     goldenAntSound.current = new Audio("/audio/eat-golden-ant.mp3");
     shieldSound.current = new Audio("/audio/eat-shield.mp3");
   }, []);
 
   useEffect(() => {
     const bgAudio = new Audio("/audio/background.mp3");
+    const gameOverAudio = new Audio("/audio/game-over.mp3");
     bgAudio.loop = true;
-    bgAudio.volume = 0.3;
+    bgAudio.volume = 1;
 
     if (!isGameOver) {
       bgAudio.play().catch((e) => {
@@ -66,9 +74,18 @@ export default function GamePage() {
       });
     }
 
+    if (isGameOver) {
+      bgAudio.pause();
+      gameOverAudio.play().catch((e) => {
+        console.warn("Game over sound failed:", e);
+      });
+    }
+
     return () => {
       bgAudio.pause();
       bgAudio.currentTime = 0;
+      gameOverAudio.pause();
+      gameOverAudio.currentTime = 0;
     };
   }, [isGameOver]);
 
@@ -111,10 +128,10 @@ export default function GamePage() {
   useEffect(() => {
     if (isGameOver) return;
     const spawnInterval = setInterval(() => {
-      setItems((prev) => [...prev, getRandomItem()]);
+      setItems((prev) => [...prev, getRandomItem(score)]);
     }, 1000);
     return () => clearInterval(spawnInterval);
-  }, [isGameOver]);
+  }, [isGameOver, score]);
 
   useEffect(() => {
     if (!isProtected) return;
@@ -140,7 +157,7 @@ export default function GamePage() {
         for (const item of prev) {
           const dx = Math.abs(item.x - pangolinX);
           const dy = Math.abs(item.y - 90);
-          if (dx < 10 && dy < 8) {
+          if (dx < 5 && dy < 8) {
             if (item.type === ITEM_TYPES.TRAP) {
               if (!isProtected) {
                 setIsGameOver(true);
@@ -178,7 +195,7 @@ export default function GamePage() {
     >
       {!isGameOver && (
         <div>
-          <div className="absolute top-0 left-0 w-full h-full bg-repeat-y bg-[url('/GameBackground.png')] animate-scrollBg z-0" />
+          <div className="absolute top-0 left-0 w-full h-full bg-repeat-y bg-[url('/image/GameBackground.png')] animate-scrollBg z-0" />
 
           {/* Score */}
           <div className="absolute top-4 right-4 text-white text-xl z-20">
@@ -186,7 +203,7 @@ export default function GamePage() {
               <div className="relative w-[150px] h-[100px]">
                 <Image
                   unoptimized
-                  src="/Score.png"
+                  src="/image/Score.png"
                   alt="Điểm số"
                   fill
                   className="object-contain"
@@ -201,19 +218,21 @@ export default function GamePage() {
           {/* Home button */}
           <div className="absolute top-8 left-8 text-white text-xl z-20">
             {!isGameOver && (
-              <div className="relative ">
-                <Image
-                  unoptimized
-                  src="/Home.png"
-                  alt="Trở về"
-                  width={80}
-                  height={80}
-                  onClick={() => {
-                    window.location.href = "/";
-                  }}
-                  className="object-contain hover:cursor-pointer transition-transform hover:scale-110"
-                />
-              </div>
+              <HoverSoundWrapper soundSrc="/audio/hover.m4a">
+                <div className="relative ">
+                  <Image
+                    unoptimized
+                    src="/image/Home.png"
+                    alt="Trở về"
+                    width={80}
+                    height={80}
+                    onClick={() => {
+                      window.location.href = "/";
+                    }}
+                    className="object-contain hover:cursor-pointer transition-transform hover:scale-110"
+                  />
+                </div>
+              </HoverSoundWrapper>
             )}
           </div>
 
@@ -230,7 +249,7 @@ export default function GamePage() {
             <div className="relative w-[100px] h-[100px]">
               <Image
                 unoptimized
-                src="/LongPangolin.png"
+                src="/image/LongPangolin.png"
                 alt="Pangolin"
                 width={100}
                 height={100}
@@ -239,7 +258,7 @@ export default function GamePage() {
                 <div className="absolute top-0 left-2 w-full h-full flex items-center justify-center">
                   <Image
                     unoptimized
-                    src="/Shield.png"
+                    src="/image/Shield.png"
                     alt="Shield Overlay"
                     width={100}
                     height={100}
@@ -262,7 +281,7 @@ export default function GamePage() {
             >
               <Image
                 unoptimized
-                src={`/${item.type}.png`}
+                src={`/image/${item.type}.png`}
                 alt={item.type}
                 width={100}
                 height={100}

@@ -6,7 +6,7 @@ export const Instruction1 = () => {
       {/* Background image */}
       <Image
         unoptimized
-        src="/Board.png"
+        src="/image/Board.png"
         alt="Instruction Board"
         fill
         className="object-contain"
@@ -20,14 +20,14 @@ export const Instruction1 = () => {
         <div className="flex items-center justify-center mb-4 gap-10 mt-5">
           <Image
             unoptimized
-            src="/LeftArrow.png"
+            src="/image/LeftArrow.png"
             alt="Mũi tên trái"
             width={70}
             height={70}
           />
           <Image
             unoptimized
-            src="/RightArrow.png"
+            src="/image/RightArrow.png"
             alt="Mũi tên phải"
             width={70}
             height={70}
@@ -39,7 +39,7 @@ export const Instruction1 = () => {
         <div>
           <Image
             unoptimized
-            src="/Trap.png"
+            src="/image/Trap.png"
             alt="Bẫy"
             width={100}
             height={100}
@@ -56,7 +56,7 @@ export const Instruction2 = () => {
       {/* Background image */}
       <Image
         unoptimized
-        src="/Board.png"
+        src="/image/Board.png"
         alt="Instruction Board"
         fill
         className="object-contain"
@@ -68,14 +68,14 @@ export const Instruction2 = () => {
         <div className="flex flex-col items-center justify-center mb-4">
           <Image
             unoptimized
-            src="/KienDenPoint.png"
+            src="/image/KienDenPoint.png"
             alt="Kiến đen bằng 1 điểm"
             width={250}
             height={100}
           />
           <Image
             unoptimized
-            src="/KienVangPoint.png"
+            src="/image/KienVangPoint.png"
             alt="Kiến vàng bằng 10 điểm"
             width={250}
             height={70}
@@ -87,7 +87,7 @@ export const Instruction2 = () => {
         <div>
           <Image
             unoptimized
-            src="/Shield.png"
+            src="/image/Shield.png"
             alt="Khiên"
             width={100}
             height={50}
