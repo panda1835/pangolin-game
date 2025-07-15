@@ -55,11 +55,13 @@ export default function GamePage() {
   const blackAntSound = useRef<HTMLAudioElement | null>(null);
   const goldenAntSound = useRef<HTMLAudioElement | null>(null);
   const shieldSound = useRef<HTMLAudioElement | null>(null);
+  const trapSound = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     blackAntSound.current = new Audio("/audio/eat-black-ant.m4a");
     goldenAntSound.current = new Audio("/audio/eat-golden-ant.mp3");
     shieldSound.current = new Audio("/audio/eat-shield.mp3");
+    trapSound.current = new Audio("/audio/trap.m4a");
   }, []);
 
   useEffect(() => {
@@ -160,6 +162,9 @@ export default function GamePage() {
           if (dx < 5 && dy < 8) {
             if (item.type === ITEM_TYPES.TRAP) {
               if (!isProtected) {
+                if (trapSound.current) {
+                  trapSound.current.play();
+                }
                 setIsGameOver(true);
               }
             } else {
