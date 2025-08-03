@@ -3,6 +3,7 @@ import HoverSoundWrapper from "@/components/common/HoverSoundWrapper";
 
 interface GameUIProps {
   score: number;
+  lives: number;
   soundOff: boolean;
   onGoHome: () => void;
   onToggleSound: () => void;
@@ -10,12 +11,30 @@ interface GameUIProps {
 
 export const GameUI = ({
   score,
+  lives,
   soundOff,
   onGoHome,
   onToggleSound,
 }: GameUIProps) => {
   return (
     <>
+      {/* Lives */}
+      <div className="absolute top-12 right-44 text-white text-xl z-20">
+        <div className="flex items-center gap-2">
+          {Array.from({ length: lives }).map((_, index) => (
+            <Image
+              key={index}
+              unoptimized
+              src="/image/Life.png"
+              alt="Life"
+              width={40}
+              height={40}
+              className="object-contain"
+            />
+          ))}
+        </div>
+      </div>
+
       {/* Score */}
       <div className="absolute top-4 right-4 text-white text-xl z-20">
         <div className="relative w-[150px] h-[100px]">

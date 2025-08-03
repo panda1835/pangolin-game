@@ -9,6 +9,7 @@ interface GameScreenProps {
   gameAreaRef: React.RefObject<HTMLDivElement | null>;
   isGameOver: boolean;
   score: number;
+  lives: number;
   pangolinX: number;
   pangolinY: number;
   isProtected: boolean;
@@ -24,6 +25,7 @@ export const GameScreen = ({
   gameAreaRef,
   isGameOver,
   score,
+  lives,
   pangolinX,
   pangolinY,
   isProtected,
@@ -45,6 +47,7 @@ export const GameScreen = ({
 
           <GameUI
             score={score}
+            lives={lives}
             soundOff={soundOff}
             onGoHome={onGoHome}
             onToggleSound={onToggleSound}

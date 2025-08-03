@@ -4,3 +4,4 @@ export { useGameLogic, ITEM_TYPES } from "./useGameLogic";
 export type { GameItem } from "./useGameLogic";
 export { usePangolinMovement } from "./usePangolinMovement";
 export { useShield } from "./useShield";
+export { useLivesAndQuiz } from "./useLivesAndQuiz";

@@ -6,12 +6,14 @@ import {
   InstructionsScreen,
   GameScreen,
 } from "@/components/screens";
+import { QuizModal } from "@/components/game/QuizModal";
 import {
   useAudio,
   useBackgroundMusic,
   useGameLogic,
   usePangolinMovement,
   useShield,
+  useLivesAndQuiz,
 } from "@/hooks";
 
 export default function Home() {
@@ -20,6 +22,7 @@ export default function Home() {
   );
   const [isGameOver, setIsGameOver] = useState(false);
   const [soundOff, setSoundOff] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const gameAreaRef = useRef<HTMLDivElement>(null);
 
   // Initialize all audio references
@@ -34,9 +37,27 @@ export default function Home() {
   const { isProtected, shieldTimeLeft, activateShield, resetShield } =
     useShield();
 
+  // Initialize lives and quiz system with a temporary score state
+  const [currentScore, setCurrentScore] = useState(0);
+
+  const {
+    lives,
+    currentQuiz,
+    showQuiz,
+    handleQuizAnswer,
+    handleQuizClose,
+    loseLife,
+    resetLives,
+  } = useLivesAndQuiz({
+    score: currentScore,
+    isGameOver,
+    onPause: () => setIsPaused(true),
+    onResume: () => setIsPaused(false),
+  });
+
   const { items, score, resetGame } = useGameLogic({
     screen,
-    isGameOver,
+    isGameOver: isGameOver || isPaused, // Pause game during quiz
     pangolinX,
     isProtected,
     soundOff,
@@ -46,10 +67,11 @@ export default function Home() {
       shieldSound: audioRefs.shieldSound,
       trapSound: audioRefs.trapSound,
     },
-    onScoreChange: () => {}, // Score is already managed in useGameLogic
+    onScoreChange: (newScore: number) => setCurrentScore(newScore),
     onGameOver: () => setIsGameOver(true),
     onPangolinJump: jump,
     onShieldActivate: activateShield,
+    onLoseLife: loseLife,
   });
 
   // Handle background music
@@ -77,6 +99,9 @@ export default function Home() {
     resetPosition();
     resetGame();
     resetShield();
+    resetLives();
+    setCurrentScore(0);
+    setIsPaused(false);
     setIsGameOver(false);
   };
 
@@ -128,20 +153,33 @@ export default function Home() {
       )}
 
       {screen === "game" && (
-        <GameScreen
-          gameAreaRef={gameAreaRef}
-          isGameOver={isGameOver}
-          score={score}
-          pangolinX={pangolinX}
-          pangolinY={pangolinY}
-          isProtected={isProtected}
-          shieldTimeLeft={shieldTimeLeft}
-          items={items}
-          soundOff={soundOff}
-          onStartGame={startGame}
-          onGoHome={goHome}
-          onToggleSound={toggleSound}
-        />
+        <>
+          <GameScreen
+            gameAreaRef={gameAreaRef}
+            isGameOver={isGameOver}
+            score={score}
+            lives={lives}
+            pangolinX={pangolinX}
+            pangolinY={pangolinY}
+            isProtected={isProtected}
+            shieldTimeLeft={shieldTimeLeft}
+            items={items}
+            soundOff={soundOff}
+            onStartGame={startGame}
+            onGoHome={goHome}
+            onToggleSound={toggleSound}
+          />
+
+          {currentQuiz && (
+            <QuizModal
+              quiz={currentQuiz}
+              isVisible={showQuiz}
+              soundOff={soundOff}
+              onAnswer={handleQuizAnswer}
+              onClose={handleQuizClose}
+            />
+          )}
+        </>
       )}
     </>
   );
