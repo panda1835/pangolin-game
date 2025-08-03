@@ -2,7 +2,19 @@ import Image from "next/image";
 import HoverSoundWrapper from "@/components/common/HoverSoundWrapper";
 import { useEffect, useRef } from "react";
 
-export const GameOver = ({ score }: { score: number }) => {
+export const GameOver = ({
+  score,
+  onPlayAgain,
+  onGoHome,
+  soundOff,
+  onToggleSound,
+}: {
+  score: number;
+  onPlayAgain: () => void;
+  onGoHome: () => void;
+  soundOff: boolean;
+  onToggleSound: () => void;
+}) => {
   const transitionSound = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -12,7 +24,6 @@ export const GameOver = ({ score }: { score: number }) => {
   return (
     <div className="relative flex min-h-screen w-screen items-center justify-center overflow-hidden">
       {/* Background */}
-      {/* <div className="absolute top-0 left-0 w-full h-full bg-repeat-y bg-[url('/Background.png')] z-0" /> */}
       <Image
         unoptimized
         src="/image/Background.png"
@@ -21,7 +32,7 @@ export const GameOver = ({ score }: { score: number }) => {
         className="absolute top-0 left-0 z-0 object-cover"
       />
       <div className="absolute top-8 left-8 text-white text-xl z-20">
-        <HoverSoundWrapper soundSrc="/audio/hover.m4a">
+        <HoverSoundWrapper soundSrc="/audio/hover.m4a" soundOff={soundOff}>
           <div className="relative ">
             <Image
               unoptimized
@@ -30,13 +41,43 @@ export const GameOver = ({ score }: { score: number }) => {
               width={80}
               height={80}
               onClick={() => {
-                if (transitionSound.current) {
+                if (!soundOff && transitionSound.current) {
                   transitionSound.current.play();
                 }
-                window.location.href = "/";
+                onGoHome();
               }}
               className="object-contain hover:cursor-pointer transition-transform hover:scale-110"
             />
+          </div>
+        </HoverSoundWrapper>
+      </div>
+
+      {/* Sound button */}
+      <div className="absolute top-32 left-8 text-white text-xl z-20">
+        <HoverSoundWrapper soundSrc="/audio/hover.m4a" soundOff={soundOff}>
+          <div
+            className="relative cursor-pointer py-2 rounded-lg hover:brightness-110 hover:scale-110"
+            onClick={onToggleSound}
+          >
+            {soundOff ? (
+              <Image
+                unoptimized
+                src="/image/SoundOff.png"
+                alt="Sound Off"
+                width={80}
+                height={80}
+                className="object-contain"
+              />
+            ) : (
+              <Image
+                unoptimized
+                src="/image/SoundOn.png"
+                alt="Sound On"
+                width={80}
+                height={80}
+                className="object-contain"
+              />
+            )}
           </div>
         </HoverSoundWrapper>
       </div>
@@ -75,14 +116,14 @@ export const GameOver = ({ score }: { score: number }) => {
           </div>
         </div>
 
-        <HoverSoundWrapper soundSrc="/audio/hover.m4a">
+        <HoverSoundWrapper soundSrc="/audio/hover.m4a" soundOff={soundOff}>
           <div
             className="relative w-[200px] h-[200px] cursor-pointer transition-transform hover:scale-110"
             onClick={() => {
-              if (transitionSound.current) {
+              if (!soundOff && transitionSound.current) {
                 transitionSound.current.play();
               }
-              window.location.reload();
+              onPlayAgain();
             }}
           >
             <Image
