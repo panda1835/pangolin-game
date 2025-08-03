@@ -37,7 +37,7 @@ export const pangolinQuizzes = [
       "Tê tê Java, tê tê Temminck",
       "Tê tê vàng, tê tê Java",
     ],
-    correctAnswerIndex: 0,
+    correctAnswerIndex: 3,
   },
   {
     id: 6,
@@ -157,7 +157,7 @@ export const pangolinQuizzes = [
     id: 20,
     question: "Lưỡi của tê tê có thể dài tới bao nhiêu cm?",
     options: ["40 cm", "20 cm", "10 cm", "70 cm"],
-    correctAnswerIndex: 3,
+    correctAnswerIndex: 0,
   },
   {
     id: 21,
