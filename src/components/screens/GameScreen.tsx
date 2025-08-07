@@ -3,7 +3,9 @@ import { GameUI } from "../game/GameUI";
 import { Pangolin } from "../game/Pangolin";
 import { FallingItems } from "../game/FallingItems";
 import { GameOver } from "../game/GameOver";
+import { Leaderboard } from "../game/Leaderboard";
 import { GameItem } from "@/hooks/useGameLogic";
+import { LeaderboardEntry } from "@/lib/types";
 
 interface GameScreenProps {
   gameAreaRef: React.RefObject<HTMLDivElement | null>;
@@ -16,9 +18,13 @@ interface GameScreenProps {
   shieldTimeLeft: number;
   items: GameItem[];
   soundOff: boolean;
+  leaderboardScores: LeaderboardEntry[];
+  showLeaderboard: boolean;
   onStartGame: () => void;
   onGoHome: () => void;
   onToggleSound: () => void;
+  onShowAchievements: () => void;
+  onBackFromLeaderboard: () => void;
 }
 
 export const GameScreen = ({
@@ -32,10 +38,27 @@ export const GameScreen = ({
   shieldTimeLeft,
   items,
   soundOff,
+  leaderboardScores,
+  showLeaderboard,
   onStartGame,
   onGoHome,
   onToggleSound,
+  onShowAchievements,
+  onBackFromLeaderboard,
 }: GameScreenProps) => {
+  // Show leaderboard when requested
+  if (isGameOver && showLeaderboard) {
+    return (
+      <Leaderboard
+        scores={leaderboardScores}
+        soundOff={soundOff}
+        onBack={onBackFromLeaderboard}
+        onGoHome={onGoHome}
+        onToggleSound={onToggleSound}
+        onStartNewGame={onStartGame}
+      />
+    );
+  }
   return (
     <div
       ref={gameAreaRef}
@@ -70,8 +93,10 @@ export const GameScreen = ({
           score={score}
           onPlayAgain={onStartGame}
           onGoHome={onGoHome}
+          onShowAchievements={onShowAchievements}
           soundOff={soundOff}
           onToggleSound={onToggleSound}
+          showLeaderboard={showLeaderboard}
         />
       )}
     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   HomeScreen,
   InstructionsScreen,
@@ -15,6 +15,8 @@ import {
   useShield,
   useLivesAndQuiz,
 } from "@/hooks";
+import { saveScore, getLeaderboard } from "@/lib/leaderboard";
+import { LeaderboardEntry } from "@/lib/types";
 
 export default function Home() {
   const [screen, setScreen] = useState<"home" | "instructions" | "game">(
@@ -23,6 +25,10 @@ export default function Home() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [soundOff, setSoundOff] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [leaderboardScores, setLeaderboardScores] = useState<
+    LeaderboardEntry[]
+  >([]);
   const gameAreaRef = useRef<HTMLDivElement>(null);
 
   // Initialize all audio references
@@ -74,6 +80,19 @@ export default function Home() {
     onLoseLife: loseLife,
   });
 
+  // Load leaderboard scores on component mount
+  useEffect(() => {
+    setLeaderboardScores(getLeaderboard());
+  }, []);
+
+  // Save score when game is over
+  useEffect(() => {
+    if (isGameOver && score > 0) {
+      saveScore(score);
+      setLeaderboardScores(getLeaderboard()); // Refresh leaderboard
+    }
+  }, [isGameOver, score]);
+
   // Handle background music
   useBackgroundMusic({
     screen,
@@ -103,6 +122,15 @@ export default function Home() {
     setCurrentScore(0);
     setIsPaused(false);
     setIsGameOver(false);
+    setShowLeaderboard(false); // Reset leaderboard view
+  };
+
+  const handleShowAchievements = () => {
+    setShowLeaderboard(true);
+  };
+
+  const handleBackFromLeaderboard = () => {
+    setShowLeaderboard(false);
   };
 
   const startGame = () => {
@@ -165,9 +193,13 @@ export default function Home() {
             shieldTimeLeft={shieldTimeLeft}
             items={items}
             soundOff={soundOff}
+            leaderboardScores={leaderboardScores}
+            showLeaderboard={showLeaderboard}
             onStartGame={startGame}
             onGoHome={goHome}
             onToggleSound={toggleSound}
+            onShowAchievements={handleShowAchievements}
+            onBackFromLeaderboard={handleBackFromLeaderboard}
           />
 
           {currentQuiz && (

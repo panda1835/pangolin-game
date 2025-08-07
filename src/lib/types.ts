@@ -10,3 +10,8 @@ export interface Quiz {
   options: string[];
   correctAnswerIndex: number;
 }
+
+export interface LeaderboardEntry {
+  score: number;
+  date: string;
+}
