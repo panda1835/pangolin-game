@@ -87,7 +87,11 @@ export const Leaderboard = ({
       )}
 
       {/* Home button */}
-      <div className={`absolute ${showBackButton ? 'top-32' : 'top-8'} left-8 text-white text-xl z-20`}>
+      <div
+        className={`absolute ${
+          showBackButton ? "top-32" : "top-8"
+        } left-8 text-white text-xl z-20`}
+      >
         <HoverSoundWrapper soundSrc="/audio/hover.m4a" soundOff={soundOff}>
           <div className="relative">
             <Image
@@ -109,7 +113,11 @@ export const Leaderboard = ({
       </div>
 
       {/* Sound button */}
-      <div className={`absolute ${showBackButton ? 'top-54' : 'top-32'} left-8 text-white text-xl z-20`}>
+      <div
+        className={`absolute ${
+          showBackButton ? "top-54" : "top-32"
+        } left-8 text-white text-xl z-20`}
+      >
         <HoverSoundWrapper soundSrc="/audio/hover.m4a" soundOff={soundOff}>
           <div
             className="relative cursor-pointer py-2 rounded-lg hover:brightness-110 hover:scale-110"
@@ -151,7 +159,7 @@ export const Leaderboard = ({
           />
 
           {/* Content overlay */}
-          <div className="absolute inset-0 flex flex-col items-center text-center px-8 py-6">
+          <div className="absolute inset-0 -top-10 flex flex-col items-center text-center px-8 py-6">
             {/* Top Label - ThanhTich.png at the very top */}
             <div className="relative mb-4">
               <Image
