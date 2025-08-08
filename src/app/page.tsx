@@ -26,6 +26,7 @@ export default function Home() {
   const [soundOff, setSoundOff] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [leaderboardFromHome, setLeaderboardFromHome] = useState(false);
   const [leaderboardScores, setLeaderboardScores] = useState<
     LeaderboardEntry[]
   >([]);
@@ -123,14 +124,26 @@ export default function Home() {
     setIsPaused(false);
     setIsGameOver(false);
     setShowLeaderboard(false); // Reset leaderboard view
+    setLeaderboardFromHome(false); // Reset the flag
   };
 
   const handleShowAchievements = () => {
     setShowLeaderboard(true);
+    if (screen === "home") {
+      setScreen("game");
+      setIsGameOver(true); // Set game over state to show leaderboard properly
+      setLeaderboardFromHome(true); // Track that we came from home
+    }
   };
 
   const handleBackFromLeaderboard = () => {
     setShowLeaderboard(false);
+    setLeaderboardFromHome(false); // Reset the flag
+    // If we came from home screen, go back to home
+    if (!isGameOver || screen !== "game") {
+      setScreen("home");
+      setIsGameOver(false);
+    }
   };
 
   const startGame = () => {
@@ -168,6 +181,7 @@ export default function Home() {
           soundOff={soundOff}
           onNavigateToInstructions={navigateToInstructions}
           onToggleSound={toggleSound}
+          onShowAchievements={handleShowAchievements}
         />
       )}
 
@@ -195,6 +209,7 @@ export default function Home() {
             soundOff={soundOff}
             leaderboardScores={leaderboardScores}
             showLeaderboard={showLeaderboard}
+            leaderboardFromHome={leaderboardFromHome}
             onStartGame={startGame}
             onGoHome={goHome}
             onToggleSound={toggleSound}

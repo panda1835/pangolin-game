@@ -10,6 +10,8 @@ interface LeaderboardProps {
   onGoHome: () => void;
   onToggleSound: () => void;
   onStartNewGame?: () => void;
+  showPlayAgainButton?: boolean;
+  showBackButton?: boolean;
 }
 
 export const Leaderboard = ({
@@ -19,6 +21,8 @@ export const Leaderboard = ({
   onGoHome,
   onToggleSound,
   onStartNewGame,
+  showPlayAgainButton = true,
+  showBackButton = true,
 }: LeaderboardProps) => {
   const transitionSound = useRef<HTMLAudioElement | null>(null);
 
@@ -58,30 +62,32 @@ export const Leaderboard = ({
         className="absolute top-0 left-0 z-0 object-cover"
       />
 
-      {/* Back Arrow */}
-      <div className="absolute top-8 left-8 text-white text-xl z-20">
-        <HoverSoundWrapper soundSrc="/audio/hover.m4a" soundOff={soundOff}>
-          <div className="relative">
-            <Image
-              unoptimized
-              src="/image/BackArrow.png"
-              alt="Quay lại"
-              width={80}
-              height={80}
-              onClick={() => {
-                if (!soundOff && transitionSound.current) {
-                  transitionSound.current.play();
-                }
-                onBack();
-              }}
-              className="object-contain hover:cursor-pointer transition-transform hover:scale-110"
-            />
-          </div>
-        </HoverSoundWrapper>
-      </div>
+      {/* Back Arrow - only show when showBackButton is true */}
+      {showBackButton && (
+        <div className="absolute top-8 left-8 text-white text-xl z-20">
+          <HoverSoundWrapper soundSrc="/audio/hover.m4a" soundOff={soundOff}>
+            <div className="relative">
+              <Image
+                unoptimized
+                src="/image/BackArrow.png"
+                alt="Quay lại"
+                width={80}
+                height={80}
+                onClick={() => {
+                  if (!soundOff && transitionSound.current) {
+                    transitionSound.current.play();
+                  }
+                  onBack();
+                }}
+                className="object-contain hover:cursor-pointer transition-transform hover:scale-110"
+              />
+            </div>
+          </HoverSoundWrapper>
+        </div>
+      )}
 
       {/* Home button */}
-      <div className="absolute top-32 left-8 text-white text-xl z-20">
+      <div className={`absolute ${showBackButton ? 'top-32' : 'top-8'} left-8 text-white text-xl z-20`}>
         <HoverSoundWrapper soundSrc="/audio/hover.m4a" soundOff={soundOff}>
           <div className="relative">
             <Image
@@ -103,7 +109,7 @@ export const Leaderboard = ({
       </div>
 
       {/* Sound button */}
-      <div className="absolute top-54 left-8 text-white text-xl z-20">
+      <div className={`absolute ${showBackButton ? 'top-54' : 'top-32'} left-8 text-white text-xl z-20`}>
         <HoverSoundWrapper soundSrc="/audio/hover.m4a" soundOff={soundOff}>
           <div
             className="relative cursor-pointer py-2 rounded-lg hover:brightness-110 hover:scale-110"
@@ -145,21 +151,21 @@ export const Leaderboard = ({
           />
 
           {/* Content overlay */}
-          <div className="absolute inset-0 flex flex-col items-center text-center px-8 py-4">
+          <div className="absolute inset-0 flex flex-col items-center text-center px-8 py-6">
             {/* Top Label - ThanhTich.png at the very top */}
-            <div className="relative -top-20 mb-4 mt-2">
+            <div className="relative mb-4">
               <Image
                 unoptimized
                 src="/image/ThanhTich.png"
                 alt="Thành tích"
-                width={550}
-                height={80}
+                width={400}
+                height={60}
                 className="object-contain"
               />
             </div>
 
-            {/* Leaderboard Entries */}
-            <div className="flex flex-col gap-3 w-full max-w-[420px] flex-1 justify-center">
+            {/* Leaderboard Entries - contained within board bounds */}
+            <div className="flex flex-col gap-2 w-full max-w-[430px] flex-1 overflow-y-auto px-4">
               {scores.length === 0 ? (
                 <div className="text-white text-2xl">
                   Chưa có thành tích nào!
@@ -168,26 +174,26 @@ export const Leaderboard = ({
                 scores.map((entry, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between rounded-lg p-3"
+                    className="flex items-center justify-between rounded-lg p-2 "
                   >
                     {/* Star Ranking */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
                       <Image
                         unoptimized
                         src={starImages[index]}
                         alt={`Hạng ${index + 1}`}
-                        width={50}
-                        height={50}
+                        width={40}
+                        height={40}
                         className="object-contain"
                       />
                     </div>
 
                     {/* Score with golden style */}
                     <div className="flex items-center gap-2">
-                      <div className="text-white text-lg font-bold opacity-75 max-w-[200px]">
+                      <div className="text-white text-lg font-bold opacity-75 max-w-[200px] text-right">
                         {formatDate(entry.date)}
                       </div>
-                      <div className="relative w-[120px] h-[80px]">
+                      <div className="relative w-[100px] h-[60px]">
                         <Image
                           unoptimized
                           src="/image/Score.png"
@@ -195,7 +201,7 @@ export const Leaderboard = ({
                           fill
                           className="object-contain"
                         />
-                        <div className="absolute inset-0 left-[-25px] top-[-5px] text-xl flex items-center justify-center font-bold bg-gradient-to-b from-[#C9612D] to-[#632A0E] bg-clip-text text-transparent">
+                        <div className="absolute inset-0 left-[-20px] top-[-3px] text-lg flex items-center justify-center font-bold bg-gradient-to-b from-[#C9612D] to-[#632A0E] bg-clip-text text-transparent">
                           {entry.score}
                         </div>
                       </div>
@@ -205,35 +211,37 @@ export const Leaderboard = ({
               )}
             </div>
 
-            {/* ChoiLai Button */}
-            <div className="mt-6 mb-2">
-              <HoverSoundWrapper
-                soundSrc="/audio/hover.m4a"
-                soundOff={soundOff}
-              >
-                <div className="relative top-10">
-                  <Image
-                    unoptimized
-                    src="/image/ChoiLai.png"
-                    alt="Chơi lại"
-                    width={200}
-                    height={80}
-                    onClick={() => {
-                      if (!soundOff && transitionSound.current) {
-                        transitionSound.current.play();
-                      }
-                      // Start new game if function is available, otherwise go back
-                      if (onStartNewGame) {
-                        onStartNewGame();
-                      } else {
-                        onBack();
-                      }
-                    }}
-                    className="object-contain hover:cursor-pointer transition-transform hover:scale-110"
-                  />
-                </div>
-              </HoverSoundWrapper>
-            </div>
+            {/* ChoiLai Button - only show when showPlayAgainButton is true */}
+            {showPlayAgainButton && (
+              <div className="mt-4">
+                <HoverSoundWrapper
+                  soundSrc="/audio/hover.m4a"
+                  soundOff={soundOff}
+                >
+                  <div className="relative">
+                    <Image
+                      unoptimized
+                      src="/image/ChoiLai.png"
+                      alt="Chơi lại"
+                      width={180}
+                      height={60}
+                      onClick={() => {
+                        if (!soundOff && transitionSound.current) {
+                          transitionSound.current.play();
+                        }
+                        // Start new game if function is available, otherwise go back
+                        if (onStartNewGame) {
+                          onStartNewGame();
+                        } else {
+                          onBack();
+                        }
+                      }}
+                      className="object-contain hover:cursor-pointer transition-transform hover:scale-110"
+                    />
+                  </div>
+                </HoverSoundWrapper>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Quiz } from "@/lib/types";
 import HoverSoundWrapper from "@/components/common/HoverSoundWrapper";
@@ -20,13 +20,24 @@ export const QuizModal = ({
 }: QuizModalProps) => {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
+  const [showCongrats, setShowCongrats] = useState(false);
+  const [congratsScale, setCongratsScale] = useState(0);
   const [scale, setScale] = useState(0);
+  const correctSound = useRef<HTMLAudioElement | null>(null);
+  const incorrectSound = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    correctSound.current = new Audio("/audio/eat-shield.mp3");
+    incorrectSound.current = new Audio("/audio/trap.m4a");
+  }, []);
 
   useEffect(() => {
     if (isVisible) {
       setScale(0);
       setSelectedAnswer(null);
       setShowResult(false);
+      setShowCongrats(false);
+      setCongratsScale(0);
       // Animate scale from 0 to 1
       const timer = setTimeout(() => setScale(1), 50);
       return () => clearTimeout(timer);
@@ -40,6 +51,28 @@ export const QuizModal = ({
     setShowResult(true);
 
     const isCorrect = answerIndex === quiz.correctAnswerIndex;
+
+    // Play sound effect
+    if (!soundOff) {
+      if (isCorrect && correctSound.current) {
+        correctSound.current.play();
+      } else if (!isCorrect && incorrectSound.current) {
+        incorrectSound.current.play();
+      }
+    }
+
+    // Show congrats animation for correct answers
+    if (isCorrect) {
+      setShowCongrats(true);
+      setCongratsScale(0);
+      // Animate congrats from 0 to 1
+      setTimeout(() => setCongratsScale(1), 100);
+      // Hide congrats after 3 seconds
+      setTimeout(() => {
+        setShowCongrats(false);
+        setCongratsScale(0);
+      }, 2000);
+    }
 
     // Call onAnswer immediately when showing result, but don't close the modal
     onAnswer(isCorrect);
@@ -78,11 +111,32 @@ export const QuizModal = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
-      {/* Game Background */}
+      {/* Quiz Background - always show the same background */}
       <div className="absolute inset-0 bg-repeat-y bg-[url('/image/GameBackground.png')]" />
 
+      {/* Congrats Animation - Show when correct answer */}
+      {showCongrats && (
+        <div className="absolute inset-0 flex items-center justify-center z-60 bg-black/20">
+          <div
+            className="transition-transform duration-500 ease-out"
+            style={{ transform: `scale(${congratsScale})` }}
+          >
+            <Image
+              unoptimized
+              src="/image/CorrectAnswerCongrats.png"
+              alt="Chúc mừng!"
+              width={400}
+              height={300}
+              className="object-contain"
+            />
+          </div>
+        </div>
+      )}
+
       <div
-        className="relative transition-transform duration-500 ease-out"
+        className={`relative transition-transform duration-500 ease-out ${
+          showCongrats ? "opacity-0" : "opacity-100"
+        }`}
         style={{ transform: `scale(${scale})` }}
       >
         {/* Question Board */}

@@ -20,6 +20,7 @@ interface GameScreenProps {
   soundOff: boolean;
   leaderboardScores: LeaderboardEntry[];
   showLeaderboard: boolean;
+  leaderboardFromHome: boolean;
   onStartGame: () => void;
   onGoHome: () => void;
   onToggleSound: () => void;
@@ -40,6 +41,7 @@ export const GameScreen = ({
   soundOff,
   leaderboardScores,
   showLeaderboard,
+  leaderboardFromHome,
   onStartGame,
   onGoHome,
   onToggleSound,
@@ -56,6 +58,8 @@ export const GameScreen = ({
         onGoHome={onGoHome}
         onToggleSound={onToggleSound}
         onStartNewGame={onStartGame}
+        showPlayAgainButton={!leaderboardFromHome}
+        showBackButton={!leaderboardFromHome}
       />
     );
   }

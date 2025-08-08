@@ -5,12 +5,14 @@ interface HomeScreenProps {
   soundOff: boolean;
   onNavigateToInstructions: () => void;
   onToggleSound: () => void;
+  onShowAchievements: () => void;
 }
 
 export const HomeScreen = ({
   soundOff,
   onNavigateToInstructions,
   onToggleSound,
+  onShowAchievements,
 }: HomeScreenProps) => {
   return (
     <main className="relative flex min-h-screen w-screen items-center justify-center overflow-hidden">
@@ -51,6 +53,25 @@ export const HomeScreen = ({
               />
             </div>
           </HoverSoundWrapper>
+
+          {/* ThanhTich Button */}
+          <div className="mt-4">
+            <HoverSoundWrapper soundSrc="/audio/hover.m4a" soundOff={soundOff}>
+              <div
+                className="relative cursor-pointer transition-transform hover:scale-110"
+                onClick={onShowAchievements}
+              >
+                <Image
+                  unoptimized
+                  src="/image/ThanhTichButton.png"
+                  alt="Thành tích"
+                  width={250}
+                  height={80}
+                  className="object-contain"
+                />
+              </div>
+            </HoverSoundWrapper>
+          </div>
         </div>
 
         {/* Pangolin Image */}
