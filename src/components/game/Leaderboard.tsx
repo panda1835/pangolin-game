@@ -231,7 +231,7 @@ export const Leaderboard = ({
                       unoptimized
                       src="/image/ChoiLai.png"
                       alt="Chơi lại"
-                      width={180}
+                      width={200}
                       height={60}
                       onClick={() => {
                         if (!soundOff && transitionSound.current) {

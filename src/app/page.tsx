@@ -99,6 +99,8 @@ export default function Home() {
     screen,
     soundOff,
     isGameOver,
+    showLeaderboard,
+    leaderboardFromHome,
     bgAudio: audioRefs.bgAudio,
     gameOverAudio: audioRefs.gameOverAudio,
   });
@@ -155,8 +157,11 @@ export default function Home() {
   };
 
   const goHome = () => {
-    // Stop game over audio if it's playing
-    if (audioRefs.gameOverAudio.current) {
+    // Only stop game over audio if it's playing, but allow smooth transition to home music
+    if (
+      audioRefs.gameOverAudio.current &&
+      !audioRefs.gameOverAudio.current.paused
+    ) {
       audioRefs.gameOverAudio.current.pause();
       audioRefs.gameOverAudio.current.currentTime = 0;
     }
@@ -169,6 +174,7 @@ export default function Home() {
 
   const navigateToInstructions = () => {
     setScreen("instructions");
+    // Don't restart audio - let it continue from home to instructions
     if (!soundOff && audioRefs.transitionSound.current) {
       audioRefs.transitionSound.current.play();
     }

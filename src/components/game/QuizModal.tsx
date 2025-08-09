@@ -28,7 +28,7 @@ export const QuizModal = ({
 
   useEffect(() => {
     correctSound.current = new Audio("/audio/eat-shield.mp3");
-    incorrectSound.current = new Audio("/audio/trap.m4a");
+    incorrectSound.current = new Audio("/audio/wrong-answer.m4a");
   }, []);
 
   useEffect(() => {
@@ -67,10 +67,13 @@ export const QuizModal = ({
       setCongratsScale(0);
       // Animate congrats from 0 to 1
       setTimeout(() => setCongratsScale(1), 100);
-      // Hide congrats after 3 seconds
+      // After 2 seconds, zoom out from 100% to 0% over 500ms, then hide
       setTimeout(() => {
-        setShowCongrats(false);
         setCongratsScale(0);
+        // Hide the congrats after zoom-out animation completes
+        setTimeout(() => {
+          setShowCongrats(false);
+        }, 500);
       }, 2000);
     }
 
@@ -112,7 +115,7 @@ export const QuizModal = ({
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       {/* Quiz Background - always show the same background */}
-      <div className="absolute inset-0 bg-repeat-y bg-[url('/image/GameBackground.png')]" />
+      <div className="absolute inset-0 bg-[length:100%_auto] bg-repeat-y bg-[url('/image/GameBackground.png')]" />
 
       {/* Congrats Animation - Show when correct answer */}
       {showCongrats && (

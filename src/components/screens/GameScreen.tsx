@@ -70,7 +70,7 @@ export const GameScreen = ({
     >
       {!isGameOver && (
         <div>
-          <div className="absolute top-0 left-0 w-full h-full bg-repeat-y bg-[url('/image/GameBackground.png')] animate-scrollBg z-0" />
+          <div className="absolute top-0 left-0 w-screen h-full bg-repeat-y bg-[length:100%_auto] bg-[url('/image/GameBackground.png')] animate-scrollBg z-0" />
 
           <GameUI
             score={score}

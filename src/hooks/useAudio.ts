@@ -13,7 +13,7 @@ export const useAudio = () => {
     transitionSound.current = new Audio("/audio/transition.m4a");
     bgAudio.current = new Audio("/audio/intro-background.mp3");
     blackAntSound.current = new Audio("/audio/eat-black-ant.m4a");
-    goldenAntSound.current = new Audio("/audio/eat-golden-ant.mp3");
+    goldenAntSound.current = new Audio("/audio/eat-golden-ant.m4a");
     shieldSound.current = new Audio("/audio/eat-shield.mp3");
     trapSound.current = new Audio("/audio/trap.m4a");
     gameOverAudio.current = new Audio("/audio/game-over.mp3");

@@ -24,11 +24,13 @@ const getRandomItem = (score: number): GameItem => {
   const goldenAntCount = score < 100 ? 3 : 2;
   probabilities.push(...Array(goldenAntCount).fill(ITEM_TYPES.GOLDEN_ANT));
 
-  // Traps - increase significantly with score for difficulty
+  // Traps - increase much more aggressively with score for difficulty
   let trapCount = 1;
-  if (score > 30) trapCount = Math.floor(score / 15); // More aggressive trap increase
-  if (score > 150) trapCount = Math.floor(score / 10); // Even more at very high scores
-  trapCount = Math.min(trapCount, 8); // Cap at 8 to prevent trap-only games
+  if (score > 20) trapCount = Math.floor(score / 10); // Start increasing earlier
+  if (score > 50) trapCount = Math.floor(score / 8); // More traps at moderate scores
+  if (score > 100) trapCount = Math.floor(score / 6); // Even more at high scores
+  if (score > 200) trapCount = Math.floor(score / 4); // Very aggressive at very high scores
+  trapCount = Math.min(trapCount, 12); // Higher cap to allow more traps at extreme scores
   probabilities.push(...Array(trapCount).fill(ITEM_TYPES.TRAP));
 
   // Shields - decrease at high scores but don't completely disappear
@@ -164,7 +166,7 @@ export const useGameLogic = ({
                 onScoreChange(newScore);
                 if (!soundOff) sounds.blackAntSound.current?.play();
               } else if (item.type === ITEM_TYPES.GOLDEN_ANT) {
-                const newScore = score + 30;
+                const newScore = score + 10;
                 setScore(newScore);
                 onScoreChange(newScore);
                 if (!soundOff) sounds.goldenAntSound.current?.play();
