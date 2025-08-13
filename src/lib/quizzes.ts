@@ -127,7 +127,7 @@ export const pangolinQuizzes = [
   },
   {
     id: 17,
-    question: "Kẻ thù chính của tê tê là gì?",
+    question: "Mối đe doạ chính của tê tê là gì?",
     options: [
       "Cá sấu",
       "Báo hoa mai",
